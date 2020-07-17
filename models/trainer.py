@@ -39,11 +39,11 @@ def trainer(model,
                 elif scale == 'sigmoid':
                     x = x/255.
 
-                model.train_step_disc(x, opt=disc_opt)
+                model.train_step_disc(x, disc_opt=disc_opt)
 
             # --- train for gen
             for _ in range(iter_gen):
-                model.train_step_gen()
+                model.train_step_gen(gen_opt=gen_opt)
 
         end_time = time.time()
 
@@ -57,11 +57,11 @@ def trainer(model,
                 x = (x-127.5)/127.5 
             elif scale == 'sigmoid':
                 x = x/255.
-            gen_tesy_loss, disc_test_loss =  model.compute_loss(x)
-            gen_loss(gen_tesy_loss)
+            gen_test_loss, disc_test_loss =  model.compute_loss(x)
+            gen_loss(gen_test_loss)
             disc_loss(disc_test_loss)
-        gen_mean_loss = -gen_loss.result(gen_tesy_loss)
-        disc_mean_loss = -disc_loss.result(disc_test_loss)
+        gen_mean_loss = -gen_loss.result()
+        disc_mean_loss = -disc_loss.result()
         print('Epoch: {}, gen loss: {}, disc loss:{} time elapse for current epoch: {}'
             .format(epoch, gen_mean_loss, disc_mean_loss, end_time - start_t))
         path = save_path + model.model_name + '_epoch_' + str(epoch) + '.png'
@@ -71,12 +71,13 @@ def trainer(model,
 def save_sample_images(model,
                 img_num=64,
                 path: str=None):
-
-    sample_img = model.sample()
+    z = tf.random.normal([img_num, model.latent_dim])
+    sample_img = model.sample(z)
     plt.figure(figsize=(15,15))
     for i in range(img_num):
         plt.subplot(8,8,i+1)
         plt.imshow(sample_img[i])
+        plt.axis('off')
     plt.savefig(path)
     return
 

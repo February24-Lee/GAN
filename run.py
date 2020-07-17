@@ -30,10 +30,10 @@ train_gen, test_gen = genDatasetCelebA(**config['dataset_params'])
 model = gan_models[config['model_params']['model_name']](**config['model_params'])
 
 # --- Optimizer
-if config['opt_params']['gen_opt']['name'] is 'Adam':
+if config['opt_params']['gen_opt']['name'] == 'Adam':
     gen_opt = tfk.optimizers.Adam(config['opt_params']['gen_opt']['learning_rate'])
 
-if config['opt_params']['disc_opt']['name'] is 'Adam':
+if config['opt_params']['disc_opt']['name'] == 'Adam':
     disc_opt = tfk.optimizers.Adam(config['opt_params']['disc_opt']['learning_rate'])
 
 # --- train
