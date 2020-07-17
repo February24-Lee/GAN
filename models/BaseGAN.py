@@ -25,7 +25,7 @@ class BaseGAN(tfk.Model):
         raise NotImplementedError
 
     @abstractmethod
-    def compute_loss(self, x:Tensor) -> List[Gen_loss, Disc_loss]:
+    def compute_loss(self, x:Tensor) -> Tuple[Gen_loss, Disc_loss]:
         pass
 
     @abstractmethod

@@ -19,8 +19,6 @@ class DCGAN(BaseGAN):
         self.model_name = model_name
         self.latent_dim = latent_dim
         self.latent_batch_size = latent_batch_size
-        self.iter_gen = iter_gen
-        self.iter_disc = iter_disc
 
         # --- Generate
         generate_input = tfkl.Input(shape=generate_param['input_shape'])
@@ -81,7 +79,7 @@ class DCGAN(BaseGAN):
             _, disc_loss = self.compute_loss(x)
 
         gradient_disc = disc_tape.gradient(disc_loss, self.discriminator.trainable_variables)
-        disc_opt.apply_gradients(zip(gradient_disc, self.generator.trainable_variables))
+        disc_opt.apply_gradients(zip(gradient_disc, self.discriminator.trainable_variables))
         return
 
     def train_step_gen(self, 
