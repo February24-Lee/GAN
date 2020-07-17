@@ -1,8 +1,9 @@
 model_params:
-  model_name: 'DCGAN'
+  model_name: 'BiGAN'
   latent_dim: 100
   latent_batch_size: 32
-  discriminate_param:
+  
+  encode_params:
     input_shape: [128, 128, 3]
     layers:
       - name: 'Conv2D'
@@ -50,9 +51,9 @@ model_params:
         strides: [4, 4]
       - name: 'Flatten'
       - name: 'Dense'
-        units: 1
-        activation: 'sigmoid'
-  generate_param:
+        units: 100
+
+  generate_params:
     input_shape: [100]
     layers:
       - name: 'Dense'
@@ -129,5 +130,8 @@ opt_params:
     name : 'Adam'
     learning_rate: 0.0001
   disc_opt: 
+    name : 'Adam'
+    learning_rate: 0.0001
+  en_opt: 
     name : 'Adam'
     learning_rate: 0.0001

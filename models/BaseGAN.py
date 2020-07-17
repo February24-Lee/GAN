@@ -18,6 +18,9 @@ class BaseGAN(tfk.Model):
     def discriminate(self, x:Tensor) -> Tensor:
         raise NotImplementedError
 
+    def encode(self, x:Tensor) -> Tensor:
+        raise NotImplementedError
+
     def generate_loss(self, y_hat:Tensor) -> Tensor:
         raise NotImplementedError
 
@@ -33,7 +36,7 @@ class BaseGAN(tfk.Model):
         pass
 
     @abstractmethod
-    def train_step_disc(self, x:Tensor,  disc_opt: Optimizer) -> Tensor:
+    def train_step_disc(self, x:Tensor,  disc_opt: Optimizer, en_opt: Optimizer) -> Tensor:
         pass
 
     @abstractmethod

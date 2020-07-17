@@ -52,6 +52,7 @@ model_params:
       - name: 'Dense'
         units: 1
         activation: 'sigmoid'
+        
   generate_param:
     input_shape: [100]
     layers:
