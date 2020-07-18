@@ -52,7 +52,7 @@ class DCGAN(BaseGAN):
     def discriminate_loss(self, y:Tensor, y_hat:Tensor) -> Tensor:
         real_loss = tfk.losses.BinaryCrossentropy()(tf.ones_like(y), y)
         fake_loss = tfk.losses.BinaryCrossentropy()(tf.zeros_like(y_hat), y_hat)
-        total_loss = real_loss + fake_loss
+        total_loss = 0.5*(real_loss + fake_loss)
         return total_loss
 
     def compute_loss(self, x=None, z:Tensor = None):
@@ -71,9 +71,11 @@ class DCGAN(BaseGAN):
 
         return gen_loss, disc_loss
 
+    @tf.function
     def train_step_disc(self, 
                         x:Tensor= None, 
-                        disc_opt= tfk.optimizers.Adam(1e-4)) -> Tensor:
+                        disc_opt= tfk.optimizers.Adam(1e-4),
+                        en_opt= None) -> Tensor:
 
         with tf.GradientTape() as disc_tape:
             _, disc_loss = self.compute_loss(x)
@@ -82,6 +84,7 @@ class DCGAN(BaseGAN):
         disc_opt.apply_gradients(zip(gradient_disc, self.discriminator.trainable_variables))
         return
 
+    @tf.function
     def train_step_gen(self, 
                         z:Tensor= None, 
                         gen_opt= tfk.optimizers.Adam(1e-4)) -> Tensor:

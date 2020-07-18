@@ -1,0 +1,47 @@
+model_params:
+  model_name: 'BASEGAN'
+  latent_dim: 100
+  latent_batch_size: 32
+  discriminate_param:
+    input_shape: [_, _, _]
+    layers:
+      - name: 'Conv2D'
+        filters: 16
+        kernel_size: 3
+        strides: [2,2]
+        padding: 'same'
+      - name: 'BN'
+      - name: 'LeakyReLu'
+
+  generate_param:
+    input_shape: [100]
+    layers:
+      - name: 'Dense'
+        units: 4096
+      - name: 'BN'
+      - name: 'LeakyReLu'
+      - name: 'Reshape'
+        target_shape: [4, 4, 256]
+
+dataset_params:
+  path: 'data/'
+  input_shape: [128, 128]
+  test_split: 0.2
+  batch_size: 32
+  shuffle: True
+  scale: 'sigmoid'
+
+train_params:
+  epochs: 50
+  iter_disc: 5
+  iter_gen: 1
+  save_path: 'assets/'
+  save_model_path: 'save/'
+
+opt_params:
+  gen_opt: 
+    name : 'Adam'
+    learning_rate: 0.0001
+  disc_opt: 
+    name : 'Adam'
+    learning_rate: 0.0001

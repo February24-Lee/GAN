@@ -1,5 +1,9 @@
 *.ipynb
 
 /data
+<<<<<<< HEAD
 
 .vscode
+=======
+.vscode/
+>>>>>>> c5a8ee6ad8c58878bf7c219b7bff2fe81b51d143

@@ -36,12 +36,19 @@ if config['opt_params']['gen_opt']['name'] == 'Adam':
 if config['opt_params']['disc_opt']['name'] == 'Adam':
     disc_opt = tfk.optimizers.Adam(config['opt_params']['disc_opt']['learning_rate'])
 
+if 'en_opt' in config['opt_params']:
+    if config['opt_params']['en_opt']['name'] == 'Adam':
+        en_opt = tfk.optimizers.Adam(config['opt_params']['en_opt']['learning_rate'])
+else:
+    en_opt = None
+
 # --- train
 trainer(model, 
         train_gen, 
         test_gen, 
         gen_opt= gen_opt,
         disc_opt= disc_opt,
+        en_opt= en_opt,
         epochs=config['train_params']['epochs'],
         iter_disc=config['train_params']['iter_disc'],
         iter_gen=config['train_params']['iter_gen'],

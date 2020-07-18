@@ -13,6 +13,7 @@ def trainer(model,
             test_x: DirectoryIterator =None,
             gen_opt=tfk.optimizers.Adam(1e-4),
             disc_opt=tfk.optimizers.Adam(1e-4),
+            en_opt=tfk.optimizers.Adam(1e-4),
             epochs=10,
             iter_disc= 1,
             iter_gen= 1,
@@ -50,6 +51,7 @@ def trainer(model,
         print('Calculating testset...')
         gen_loss = tfk.metrics.Mean()
         disc_loss = tfk.metrics.Mean()
+        en_loss = tfk.metrics.Mean()
         for index, x in enumerate(test_x):
             if index > test_iter:
                 break
@@ -57,13 +59,25 @@ def trainer(model,
                 x = (x-127.5)/127.5 
             elif scale == 'sigmoid':
                 x = x/255.
-            gen_test_loss, disc_test_loss =  model.compute_loss(x)
+
+            if hasattr(model,'encode'):
+                gen_test_loss, disc_test_loss, en_test_loss =  model.compute_loss(x)
+                en_loss(en_test_loss)
+            else:    
+                gen_test_loss, disc_test_loss =  model.compute_loss(x)
             gen_loss(gen_test_loss)
             disc_loss(disc_test_loss)
-        gen_mean_loss = -gen_loss.result()
-        disc_mean_loss = -disc_loss.result()
-        print('Epoch: {}, gen loss: {}, disc loss:{} time elapse for current epoch: {}'
-            .format(epoch, gen_mean_loss, disc_mean_loss, end_time - start_t))
+        if hasattr(model, 'encode'):
+            gen_mean_loss = -gen_loss.result()
+            disc_mean_loss = -disc_loss.result()
+            en_mean_loss = -en_loss.result()
+            print('Epoch: {}, gen loss: {}, disc loss:{}, en_loss:{} time elapse for current epoch: {}'
+              .format(epoch, gen_mean_loss, disc_mean_loss, en_mean_loss, end_time - start_t))
+        else:
+            gen_mean_loss = -gen_loss.result()
+            disc_mean_loss = -disc_loss.result()
+            print('Epoch: {}, gen loss: {}, disc loss:{} time elapse for current epoch: {}'
+              .format(epoch, gen_mean_loss, disc_mean_loss, end_time - start_t))
         path = save_path + model.model_name + '_epoch_' + str(epoch) + '.png'
         save_sample_images(model, img_num=64, path=path)
     return 
